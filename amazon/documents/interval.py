@@ -59,7 +59,3 @@ class Interval:
         """ Return True if there exists an interval common to self and other """
         a, b = sorted((self, other))
         return a.end > b.start
-
-    def shift(self, i: int):
-        self.start += i
-        self.end += i

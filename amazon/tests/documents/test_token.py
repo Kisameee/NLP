@@ -11,7 +11,7 @@ class TestToken(TestCase):
         self.assertEqual(self.object.text, "text", "wrong text")
 
     def test_pos(self):
-        self.assertEqual(self.object.text, "text", "wrong pos")
+        self.assertEqual(self.object.pos, "pos", "wrong pos")
 
     def test_shape(self):
-        self.assertEqual(self.object.text, "text", "wrong shape")
+        self.assertEqual(self.object.shape, "shape", "wrong shape")

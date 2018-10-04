@@ -33,7 +33,9 @@ class Token(Interval):
 
     @property
     def shape(self):
-        return self.shape
+        return self._shape
+
+
 
     def __repr__(self):
         return 'Token({}, {}, {})'.format(self._text, self._start, self._end)

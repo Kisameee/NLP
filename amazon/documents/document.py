@@ -90,11 +90,9 @@ class Document:
         sentences = []
         missing = None
         for sentence in sentences_tokens:
-            # TODO: Handle linebreak '\n' with 'NL'
             pos = text.find(sentence, offset, offset + max(500, len(sentence)))
             if pos > -1:
                 if missing:
-                    # TODO: Handle linebreak '\n' with 'NL'
                     s = Sentence(doc, offset + pos, offset + pos + len(missing))
                     sentences.append(s)
                     offset += len(missing)
