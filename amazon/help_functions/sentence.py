@@ -14,4 +14,10 @@ class Sentence(Interval):
     @property
     def tokens(self):
         """Returns the list of tokens contained in a sentence"""
-        # TODO: To be implemented (tip: use Interval.overlap)
+        list = []
+        for token in self._doc.tokens:
+            if Interval.overlaps(self, token):
+                list.append(token)
+        return list
+
+        #return [token for token in self._doc.tokens if Interval.overlaps(self, token)]

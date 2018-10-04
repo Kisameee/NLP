@@ -17,33 +17,25 @@ class Token(Interval):
         :param text: this is the text representation of token
         """
 
-    Interval.__init__(self, start, end)
-    self._doc = document
-    # TODO: To be implemented
+        Interval.__init__(self, start, end)
+        self._doc = document
+        self._start = start
+        self._end = end
+        self._pos = pos
+        self._shape = shape
+        self._text = text
 
+    @property
+    def text(self):
+        return self._text
 
-@property
-def text(self):
+    @property
+    def pos(self):
+        return self._pos
 
+    @property
+    def shape(self):
+        return self.shape
 
-# TODO: To be implemented
-
-@property
-def pos(self):
-
-
-# TODO: To be implemented
-
-@property
-def shape(self):
-
-
-# TODO: To be implemented
-
-def __getitem__(self, item):
-
-
-# TODO: To be implemented
-
-def __repr__(self):
-    return 'Token({}, {}, {})'.format(self.text, self.start, self.end)
+    def __repr__(self):
+        return 'Token({}, {}, {})'.format(self._text, self._start, self._end)
