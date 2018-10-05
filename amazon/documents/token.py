@@ -1,10 +1,10 @@
-from amazon.help_functions.interval import Interval
+from amazon.documents.interval import Interval
 
 
 class Token(Interval):
     """ A Interval representing word like units of text with a dictionary of features """
 
-    def __init__(self, document, start: int, end: int, pos: str, shape: int, text: str):
+    def __init__(self, document, start: int, end: int, pos: str, shape: str, text: str):
         """
         Note that a token has 2 text representations.
         1) How the text appears in the original document e.g. doc.text[token.start:token.end]
@@ -19,8 +19,6 @@ class Token(Interval):
 
         Interval.__init__(self, start, end)
         self._doc = document
-        self._start = start
-        self._end = end
         self._pos = pos
         self._shape = shape
         self._text = text

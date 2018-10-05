@@ -1,4 +1,4 @@
-from amazon.help_functions.interval import Interval
+from amazon.documents.interval import Interval
 
 
 class Sentence(Interval):
