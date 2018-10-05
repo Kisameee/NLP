@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-
-"""
-File for handling a text document.
-"""
 import re
 from typing import List
 
