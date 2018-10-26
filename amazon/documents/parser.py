@@ -1,3 +1,6 @@
+from amazon.documents import Document
+
+
 class Parser(object):
     """Classe parente pour tous les parsers"""
     def create(self):
@@ -7,7 +10,3 @@ class Parser(object):
         with open(filename, 'r', encoding='utf-8') as fp:
             content = fp.read()
         return self.read(content)
-
-class SimpleTextParser(Parser):
-    def read(self, content: str) -> Document:
-        return Document().create_from_text(content)
