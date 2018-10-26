@@ -9,3 +9,4 @@ class TestParser(TestCase):
     def test_parser_json_is_true(self):
         file = json.load(os.join(DATA_DIR, 'digital_music_reviews.json'))
 
+        self.assertEqual(sum(1 for line in open(file)), 64706)
