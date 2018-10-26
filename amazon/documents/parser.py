@@ -10,3 +10,4 @@ class Parser(object):
         with open(filename, 'r', encoding='utf-8') as fp:
             content = fp.read()
         return self.read(content)
+
