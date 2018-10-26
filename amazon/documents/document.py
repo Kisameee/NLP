@@ -18,6 +18,7 @@ class Document:
         self.text = None
         self.tokens = None
         self.sentences = None
+        self.overall = None
 
     @classmethod
     def create_from_text(cls, text: str = None) -> 'Document':
