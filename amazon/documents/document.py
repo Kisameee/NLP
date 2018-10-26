@@ -1,9 +1,9 @@
 import re
 from typing import List
-
 import nltk
-
 from amazon.documents import *
+from .token import Token
+from .sentence import Sentence
 
 
 class Document:

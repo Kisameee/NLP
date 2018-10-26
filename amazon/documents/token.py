@@ -38,4 +38,4 @@ class Token(Interval):
 
 
     def __repr__(self):
-        return 'Token({}, {}, {})'.format(self._text, self._start, self._end)
+        return 'Token({}, {}, {})'.format(self._text, self.start, self.end)
