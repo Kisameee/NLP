@@ -1,6 +1,6 @@
 import os
 from typing import List
-
+import numpy as np
 from gensim.models import KeyedVectors
 
 from amazon.data import DATA_DIR
@@ -36,19 +36,23 @@ class Vectorizer:
         :return: lists of numpy arrays for word, pos and shape features.
                  Each item in the list is a sentence, i.e. a list of indices (one per token)
         """
-        words, pos, shapes = [], [], []
+        count_sentences, max_length = 0
         for document in documents:
-            tmp_words, tmp_pos, tmp_shapes = []
-            for token in documents.tokens:
-                tmp_pos.append(self.pos2index[token.pos])
-                tmp_shapes.append(self.shapes[token.shape])
+            count_sentences += 1
+            if(len(document.tokens) > max_length):
+                max_length = len(document.tokens)
+
+        words, pos, shapes = np.zeros((count_sentences, max_length)), np.zeros((count_sentences, max_length)), np.zeros((count_sentences, max_length))
+        i = 0
+        for document in documents:
+            j = 0
+            for token in document.tokens:
+                pos[i][j] = self.pos2index[token.pos]
+                shapes[i][j] = self.shapes[token.shape]
                 if token.text.lower() in self.word_embeddings.index2word:
-                    tmp_words.append(self.word_embeddings.index2word.index(token.text.lower()))
-                else:
-                    tmp_words.append(0)
-            pos.append(tmp_pos)
-            words.append(tmp_words)
-            shapes.append(tmp_shapes)
+                    words[i][j] = self.word_embeddings.index2word.index(token.text.lower())
+                ++j
+            ++i
         return words, pos, shapes
 
     def encode_annotations(self, documents: List[Document]):
