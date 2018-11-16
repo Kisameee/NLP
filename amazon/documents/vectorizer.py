@@ -38,25 +38,18 @@ class Vectorizer:
         """
         words, pos, shapes = [], [], []
         for document in documents:
-            for sentence in document.sentences:
-                tmp_words, tmp_pos, tmp_shapes = []
-                for token in sentence.tokens:
-                    tmp_pos.append(self.pos2index[token.pos])
-                    tmp_shapes.append(self.shapes[token.shape])
-                    if token.text.lower() in self.word_embeddings.index2word:
-                        tmp_words.append(self.word_embeddings.index2word.index(token.text.lower()))
-                    else:
-                        tmp_words.append(0)
-                pos.append(tmp_pos)
-                words.append(tmp_words)
-                shapes.append(tmp_shapes)
-
+            tmp_words, tmp_pos, tmp_shapes = []
+            for token in documents.tokens:
+                tmp_pos.append(self.pos2index[token.pos])
+                tmp_shapes.append(self.shapes[token.shape])
+                if token.text.lower() in self.word_embeddings.index2word:
+                    tmp_words.append(self.word_embeddings.index2word.index(token.text.lower()))
+                else:
+                    tmp_words.append(0)
+            pos.append(tmp_pos)
+            words.append(tmp_words)
+            shapes.append(tmp_shapes)
         return words, pos, shapes
-        # Loop over documents
-        #        Loop over tokens
-        #           Convert features to indices
-        #           Append to document (not to sentence)
-        # return word, pos, shape
 
     def encode_annotations(self, documents: List[Document]):
         """
@@ -64,7 +57,7 @@ class Vectorizer:
         :param documents: list of documents to be converted in annotations vector
         :return: numpy array. Each item in the list is a sentence, i.e. a list of labels (one per token)
         """
-        # Loop over documents
-        #    Convert label to numerical representation
-        #    Append to labels
-        # return labels
+        labels = []
+        for document in documents:
+            labels.append(self.indexes[document.overall])
+        return labels
