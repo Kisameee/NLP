@@ -36,23 +36,16 @@ class Vectorizer:
         :return: lists of numpy arrays for word, pos and shape features.
                  Each item in the list is a sentence, i.e. a list of indices (one per token)
         """
-        count_sentences, max_length = 0
-        for document in documents:
-            count_sentences += 1
-            if(len(document.tokens) > max_length):
-                max_length = len(document.tokens)
+        count_sentences = sum([len(document.sentences) for document in documents])
+        max_length = max([len(document.tokens) for document in documents])
 
         words, pos, shapes = np.zeros((count_sentences, max_length)), np.zeros((count_sentences, max_length)), np.zeros((count_sentences, max_length))
-        i = 0
-        for document in documents:
-            j = 0
-            for token in document.tokens:
+        for i, document in enumerate(documents):
+            for j, token in enumerate(document.tokens):
                 pos[i][j] = self.pos2index[token.pos]
                 shapes[i][j] = self.shapes[token.shape]
                 if token.text.lower() in self.word_embeddings.index2word:
                     words[i][j] = self.word_embeddings.index2word.index(token.text.lower())
-                ++j
-            ++i
         return words, pos, shapes
 
     def encode_annotations(self, documents: List[Document]):
@@ -61,6 +54,7 @@ class Vectorizer:
         :param documents: list of documents to be converted in annotations vector
         :return: numpy array. Each item in the list is a sentence, i.e. a list of labels (one per token)
         """
+
         labels = []
         for document in documents:
             labels.append(self.indexes[document.overall])
