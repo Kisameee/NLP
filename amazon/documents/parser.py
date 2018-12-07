@@ -3,6 +3,7 @@ from amazon.documents import Document
 
 class Parser(object):
     """Classe parente pour tous les parsers"""
+
     def create(self):
         return self
 
@@ -10,4 +11,3 @@ class Parser(object):
         with open(filename, 'r', encoding='utf-8') as fp:
             content = fp.read()
         return self.read(content)
-

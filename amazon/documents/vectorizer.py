@@ -1,5 +1,6 @@
 import os
 from typing import List
+
 import numpy as np
 from gensim.models import KeyedVectors
 
@@ -23,11 +24,10 @@ class Vectorizer:
                           'RBS': 27, 'VBD': 28, 'IN': 29, 'FW': 30, 'RP': 31, 'JJR': 32, 'JJS': 33, 'PDT': 34, 'MD': 35,
                           'VB': 36, 'WRB': 37, 'NNP': 38, 'EX': 39, 'NNS': 40, 'SYM': 41, 'CC': 42, 'CD': 43, 'POS': 44,
                           'LS': 45}
-        #Create shape to index dictionary
-        self.shapes = {'NL':0, 'NUMBER': 1, 'SPECIAL' :2,'ALL-CAPS': 3, '1ST-CAP': 4, 'LOWER': 5, 'MISC':6}
-        #Create labels to index dictionary
+        # Create shape to index dictionary
+        self.shapes = {'NL': 0, 'NUMBER': 1, 'SPECIAL': 2, 'ALL-CAPS': 3, '1ST-CAP': 4, 'LOWER': 5, 'MISC': 6}
+        # Create labels to index dictionary
         self.indexes = {1: 0, 2: 0, 3: 0, 4: 1, 5: 1}
-
 
     def encode_features(self, documents: List[Document]):
         """
@@ -39,7 +39,8 @@ class Vectorizer:
         count_sentences = sum([len(document.sentences) for document in documents])
         max_length = max([len(document.tokens) for document in documents])
 
-        words, pos, shapes = np.zeros((count_sentences, max_length)), np.zeros((count_sentences, max_length)), np.zeros((count_sentences, max_length))
+        words, pos, shapes = np.zeros((count_sentences, max_length)), np.zeros((count_sentences, max_length)), np.zeros(
+            (count_sentences, max_length))
         for i, document in enumerate(documents):
             for j, token in enumerate(document.tokens):
                 pos[i][j] = self.pos2index[token.pos]

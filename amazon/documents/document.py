@@ -1,9 +1,11 @@
 import re
 from typing import List
+
 import nltk
+
 from amazon.documents import *
-from .token import Token
 from .sentence import Sentence
+from .token import Token
 
 
 class Document:
@@ -30,7 +32,11 @@ class Document:
         doc = Document()
         doc.text = text
         # 1. Tokenize text (tokens & sentences)
-        words, pos_tags = zip(*nltk.pos_tag(nltk.word_tokenize(text)))
+
+        try:
+            words, pos_tags = zip(*nltk.pos_tag(nltk.word_tokenize(text)))
+        except:
+            pass
         sentences = nltk.sent_tokenize(text.replace('\n', ' '))
         # 2. Find tokens intervals
         doc.tokens = Document._find_tokens(doc, words, pos_tags, text)
