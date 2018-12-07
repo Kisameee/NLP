@@ -78,20 +78,7 @@ class RecurrentNeuralNetwork():
 
         merged_input = concatenate([word_embeddings, pos_embeddings, shape_embeddings], axis=-1)
 
-        # Build the rest of the model here
-        print('Build Bi-RNN model...')
-        # Input definition
-        word_input = Input(shape=(100,), dtype='int32', name='word_input')
-
-        # Define layers
-        word_embeddings = Embedding(input_dim=vocab_size, output_dim=50, trainable=True, mask_zero=True)(word_input)
-
-        word_embeddings = Dropout(0.5, name='first_dropout')(word_embeddings)
-
-
-        #####
-
-        bilstm = Bidirectional(LSTM(100, activation='tanh', return_sequences=True), name='bi-lstm')(word_embeddings)
+        bilstm = Bidirectional(LSTM(100, activation='tanh', return_sequences=True), name='bi-lstm')(merged_input)
 
         lstm = LSTM(100, activation='tanh', name='lstm')(bilstm)
 
