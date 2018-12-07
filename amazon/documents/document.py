@@ -35,13 +35,13 @@ class Document:
 
         try:
             words, pos_tags = zip(*nltk.pos_tag(nltk.word_tokenize(text)))
+            sentences = nltk.sent_tokenize(text.replace('\n', ' '))
+            # 2. Find tokens intervals
+            doc.tokens = Document._find_tokens(doc, words, pos_tags, text)
+            # 3. Find sentences intervals
+            doc.sentences = Document._find_sentences(doc, sentences, text)
         except:
             pass
-        sentences = nltk.sent_tokenize(text.replace('\n', ' '))
-        # 2. Find tokens intervals
-        doc.tokens = Document._find_tokens(doc, words, pos_tags, text)
-        # 3. Find sentences intervals
-        doc.sentences = Document._find_sentences(doc, sentences, text)
         return doc
 
     @staticmethod
