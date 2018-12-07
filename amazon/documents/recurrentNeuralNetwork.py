@@ -88,6 +88,9 @@ class RecurrentNeuralNetwork():
 
         word_embeddings = Dropout(0.5, name='first_dropout')(word_embeddings)
 
+
+        #####
+
         bilstm = Bidirectional(LSTM(100, activation='tanh', return_sequences=True), name='bi-lstm')(word_embeddings)
 
         lstm = LSTM(100, activation='tanh', name='lstm')(bilstm)
