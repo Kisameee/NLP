@@ -1,14 +1,17 @@
-from keras.layers import Input, Embedding, Dropout, Bidirectional, LSTM, Dense, TimeDistributed, Flatten
-from keras.layers import concatenate
-from keras.models import Model
 from keras.models import load_model, save_model
-
-from .neural_network import NeuralNetwork
+from keras.layers import concatenate
+from keras.layers import Input, Embedding, Dropout, Bidirectional, LSTM, Dense, TimeDistributed, Flatten
+from keras.models import Model
+from keras.preprocessing import sequence
+from keras.models import Sequential, Model
+from keras.layers import Dense, Embedding, Flatten, Dropout, Input, LSTM, Bidirectional, TimeDistributed
+from keras.datasets import imdb
+from sklearn import metrics
 
 
 class RecurrentNeuralNetwork():
-    def __init__(self):
-        self._model = None
+    def __init__(self, model=None):
+        self._model = model
 
     def load_weights(self, *args, **kwargs):
         return self._model.load_weights(*args, **kwargs)
@@ -52,10 +55,28 @@ class RecurrentNeuralNetwork():
 
         merged_input = concatenate([word_embeddings, pos_embeddings, shape_embeddings], axis=-1)
 
-        # Build the rest of the model here
+        #################################
+
+        bilstm = Bidirectional(LSTM(100, activation='tanh', return_sequences=True), name='bi-lstm')(merged_input)
+
+        lstm = LSTM(100, activation='tanh', name='lstm')(bilstm)
+
+        lstm_layer = Dropout(0.5, name='second_dropout')(lstm)
+
+        output = Dense(1, activation='sigmoid', name='output')(lstm_layer)
+
+        # Build and compile model
+        model = Model(inputs=[word_input], outputs=output)
+
+        model.compile(optimizer='adam',
+                      loss='binary_crossentropy',
+                      metrics=['accuracy'])
 
         print(model.summary())
-        return Recurrent(model)
+
+        ###################################
+        print(model.summary())
+        return RecurrentNeuralNetwork(model)
 
     @classmethod
     def build_classification(cls, word_embeddings, input_shape: dict, out_shape: int, units=100,
@@ -78,40 +99,8 @@ class RecurrentNeuralNetwork():
 
         merged_input = concatenate([word_embeddings, pos_embeddings, shape_embeddings], axis=-1)
 
-        bilstm = Bidirectional(LSTM(100, activation='tanh', return_sequences=True), name='bi-lstm')(merged_input)
+        # Build the rest of the model here
 
-        lstm = LSTM(100, activation='tanh', name='lstm')(bilstm)
-
-        lstm_layer = Dropout(0.5, name='second_dropout')(lstm)
-
-        output = Dense(1, activation='sigmoid', name='output')(lstm_layer)
-
-        # Build and compile model
-        model = Model(inputs=[word_input], outputs=output)
-
-        model.compile(optimizer='adam',
-                      loss='binary_crossentropy',
-                      metrics=['accuracy'])
-
-        print(model.summary())
-
-        print('Train...')
-        model.fit(x_train, y_train,
-                  batch_size=batch_size,
-                  epochs=10,
-                  validation_data=(x_test, y_test))
-
-        score, acc = model.evaluate(x_test, y_test, batch_size=batch_size)
-
-        print('\n')
-        print('Evaluate score:', score)
-        print('Evaluate accuracy:', acc)
-
-        print('Testing metrics')
-        y_pred = model.predict(x_test, batch_size=1, verbose=0)
-        y_pred = (y_pred > 0.5).astype('int32')
-        print(metrics.classification_report(y_test.flatten(), y_pred.flatten()))
-#################################################################################
         print(model.summary())
         return Recurrent(model)
 
