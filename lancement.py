@@ -1,51 +1,49 @@
+import os
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from sklearn.metrics import classification_report
+
+from amazon.documents import Vectorizer
+from amazon.documents.amazonReviewParser import AmazonReviewParser
+from amazon.documents.recurrentNeuralNetwork import RecurrentNeuralNetwork
+from amazon.data import DATA_DIR
+from keras.utils import np_utils
+
 ############Charger les données################
 print('Reading training data')
-documents = YourParser().read_file('/Path/to/trainingdata')
+file= os.path.join(DATA_DIR, 'digital_music_reviews.json')
+documents = AmazonReviewParser().read_file(file)
 
 #############Transformer en vecteurs de caractéristiques (feature vectors)######################
-
 print('Create features')
-vectorizer = Vectorizer(word_embedding_path='/Path/to/embeddings file')
+vectorizer = Vectorizer(word_embedding_path=os.path.join(DATA_DIR, 'glove.txt'))
 word, pos, shape = vectorizer.encode_features(documents)
 labels = vectorizer.encode_annotations(documents)
-print('Loaded {} data samples'.format(len(features)))
+print('Loaded {} data samples'.format(len(labels)))
 
 
 #############Padding (Rembourrage)#############
-
-from keras.utils import np_utils
-
 print('Split training/validation')
 max_length = 60
 # --------------- Features ----------------
 # 1. Split features to training and testing set
-word_train, word_validation = # split 80% and 20%
+split = int(len(word)*80/100)
+word_train, word_validation = word[0:split], word[split:]
+pos_train, pos_validation = pos[0: split], pos[split:]
+shape_train, shape_validation = shape[0: split], shape[split:]
 # 2. Padd sequences
-word_train = = sequence.pad_sequences(word_train, maxlen=max_length)
-word_validation = sequence.pad_sequences(word_validation, maxlen=max_length)
+# deja fait
+
 # Repeat for POS and Shape
 
 # --------------- Labels -------------------
 # 1. Convert to one-hot vectors
 labels = [np_utils.to_categorical(y_group, num_classes=len(vectorizer.labels)) for y_group in labels]
 # 2. Split labels to training and test set
-y_train, y_validation = # split 80% and 20%
-# 3. (only for sequence tagging) Pad sequences
-y_train =  sequence.pad_sequences(y_train, maxlen=max_length)
-y_validation =  sequence.pad_sequences(y_validation, maxlen=max_length)
+y_train, y_validation =  labels[0: split], labels[split:]
 
 
 #########Entraînemer et Sauvegarder le modèle##############
-
-from .yourpackage import RecurrentNeuralNetwork
-
 print('Building network...')
-model = RecurrentNeuralNetwork.build_sequence(word_embeddings=vectorizer.word_embeddings,
-                                      input_shape={'pos': (len(vectorizer.pos2index), 10),
-                                                   'shape': (len(vectorizer.shape2index), 2)},
-                                      out_shape=len(vectorizer.labels),
-                                      units=100, dropout_rate=0.5)
-# or
 model = RecurrentNeuralNetwork.build_classification(word_embeddings=vectorizer.word_embeddings,
                                             input_shape={'pos': (len(vectorizer.pos2index), 10),
                                                          'shape': (len(vectorizer.shape2index), 2),
