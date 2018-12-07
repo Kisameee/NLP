@@ -36,11 +36,10 @@ class Vectorizer:
         :return: lists of numpy arrays for word, pos and shape features.
                  Each item in the list is a sentence, i.e. a list of indices (one per token)
         """
-        count_sentences = sum([len(document.sentences) for document in documents])
         max_length = max([len(document.tokens) for document in documents])
 
-        words, pos, shapes = np.zeros((count_sentences, max_length)), np.zeros((count_sentences, max_length)), np.zeros(
-            (count_sentences, max_length))
+        words, pos, shapes = np.zeros((len(documents), max_length)), np.zeros((len(documents), max_length)), np.zeros(
+            (len(documents), max_length))
         for i, document in enumerate(documents):
             for j, token in enumerate(document.tokens):
                 pos[i][j] = self.pos2index[token.pos]
