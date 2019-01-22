@@ -1,4 +1,6 @@
 import os
+
+import numpy
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.metrics import classification_report
 
@@ -10,7 +12,7 @@ from keras.utils import np_utils
 
 ############Charger les données################
 print('Reading training data')
-file= os.path.join(DATA_DIR, 'digital_music_reviews.json')
+file= os.path.join(DATA_DIR, 'test.json')
 documents = AmazonReviewParser().read_file(file)
 
 #############Transformer en vecteurs de caractéristiques (feature vectors)######################
@@ -37,18 +39,15 @@ shape_train, shape_validation = shape[0: split], shape[split:]
 
 # --------------- Labels -------------------
 # 1. Convert to one-hot vectors
-labels = [np_utils.to_categorical(y_group, num_classes=len(vectorizer.labels)) for y_group in labels]
+labels = [np_utils.to_categorical(y_group, num_classes=len(vectorizer.indexes)) for y_group in labels]
 # 2. Split labels to training and test set
-y_train, y_validation =  labels[0: split], labels[split:]
-
-
+y_train, y_validation =  [labels[0: split]], [labels[split:]]
 #########Entraînemer et Sauvegarder le modèle##############
 print('Building network...')
 model = RecurrentNeuralNetwork.build_classification(word_embeddings=vectorizer.word_embeddings,
                                             input_shape={'pos': (len(vectorizer.pos2index), 10),
-                                                         'shape': (len(vectorizer.shape2index), 2),
+                                                         'shape': (len(vectorizer.shapes), 2),
                                                          'max_length': max_length},
-                                            out_shape=len(vectorizer.labels),
                                             units=100, dropout_rate=0.5)
 
 print('Train...')
@@ -60,8 +59,11 @@ early_stopping = EarlyStopping(monitor='val_loss', patience=10)
 # Callback that saves the best model across epochs
 saveBestModel = ModelCheckpoint(trained_model_name, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
 
-model.fit([word_train, pos_train, shape_train], y_train,
-          validation_data=([word_validation, pos_validation, shape_validation], y_validation),
+x_train = [word_train, pos_train, shape_train]
+x_validation = [word_validation, pos_validation, shape_validation]
+
+model.fit(x_train, y_train,
+          validation_data=(x_validation, y_validation),
           batch_size=32,  epochs=10, callbacks=[saveBestModel, early_stopping])
 
 # Load the best weights in the model
