@@ -3,7 +3,7 @@ from typing import List
 
 import nltk
 
-from amazon.documents import *
+import amazon.documents
 from .sentence import Sentence
 from .token import Token
 
@@ -29,7 +29,7 @@ class Document:
         :param text: document text as a string
         :return: The document text as Document object
         """
-        doc = Document()
+        doc = amazon.documents.Document()
         doc.text = text
         # 1. Tokenize text (tokens & sentences)
 
@@ -37,9 +37,9 @@ class Document:
             words, pos_tags = zip(*nltk.pos_tag(nltk.word_tokenize(text)))
             sentences = nltk.sent_tokenize(text.replace('\n', ' '))
             # 2. Find tokens intervals
-            doc.tokens = Document._find_tokens(doc, words, pos_tags, text)
+            doc.tokens = amazon.documents.Document._find_tokens(doc, words, pos_tags, text)
             # 3. Find sentences intervals
-            doc.sentences = Document._find_sentences(doc, sentences, text)
+            doc.sentences = amazon.documents.Document._find_sentences(doc, sentences, text)
         except:
             pass
         return doc

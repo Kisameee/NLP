@@ -3,7 +3,6 @@ from keras.layers import concatenate
 from keras.models import Model
 from keras.models import load_model, save_model
 
-
 class RecurrentNeuralNetwork():
     def __init__(self, model=None):
         self._model = model
@@ -55,7 +54,7 @@ class RecurrentNeuralNetwork():
 
         bilstm = Bidirectional(LSTM(units, activation='tanh', return_sequences=True), name='bi-lstm')(merged_input)
 
-        lstm = LSTM(units, activation='tanh', name='lstm')(bilstm)
+        lstm = LSTM(units, activation='tanh', name='lstm' ,  return_sequences=False)(bilstm)
 
         lstm_layer = Dropout(dropout_rate, name='second_dropout')(lstm)
 
