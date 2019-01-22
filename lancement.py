@@ -1,6 +1,6 @@
 import os
 
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from sklearn.metrics import classification_report
 
 from amazon.data import DATA_DIR
@@ -8,9 +8,12 @@ from amazon.documents import Vectorizer
 from amazon.documents.amazonReviewParser import AmazonReviewParser
 from amazon.documents.recurrentNeuralNetwork import RecurrentNeuralNetwork
 
+experiment_name="Gros json de ses morts"
+tb_callback = TensorBoard("./logs/"+experiment_name)
+
 ############Charger les données################
 print('Reading training data')
-file= os.path.join(DATA_DIR, 'test.json')
+file= os.path.join(DATA_DIR, 'digital_music_reviews.json')
 documents = AmazonReviewParser().read_file(file)
 
 #############Transformer en vecteurs de caractéristiques (feature vectors)######################
@@ -66,7 +69,7 @@ print('test')
 
 model.fit(x_train, y_train,
           validation_data=(x_validation, y_validation),
-          batch_size=32,  epochs=10, callbacks=[saveBestModel, early_stopping])
+          batch_size=32,  epochs=10, callbacks=[saveBestModel, early_stopping, tb_callback])
 
 # Load the best weights in the model
 model.load_weights(trained_model_name)
@@ -74,14 +77,14 @@ model.load_weights(trained_model_name)
 # Save the complete model
 model.save('rnn.h5')
 
-predicted = model.predict([word_validation, pos_validation, shape_validation], batch_size=3)
+predicted = model.predict([word_validation, pos_validation, shape_validation], batch_size=13)
 #for fi in range(word_validation.shape[0]):
   #  pred = model.predict([word_validation[fi], pos_validation[fi], shape_validation[fi]], batch_size=1, verbose=0)
  #   pred_class = RecurrentNeuralNetwork.probas_to_classes(pred)
 #    predicted.append(pred_class)
 predicted = [RecurrentNeuralNetwork.probas_to_classes(p) for p in predicted]
 accuracy = sum([1 for p, l in zip(predicted, y_validation) if p == l]) / word_validation.shape[0]
-print(f'Accuracy of : {accuracy}%')
+print(f'Accuracy of : {accuracy * 100}%')
 ######VALIDATION########
 
 # Use the test data: Unpadded feature vectors + unpaded and numerical (not one-hot vectors) labels
