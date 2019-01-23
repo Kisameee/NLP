@@ -10,9 +10,14 @@ class AmazonReviewParser(Parser):
         documents = []
         for line in content.splitlines():
             comment = json.loads(line)
-            doc = Document.create_from_text(comment["reviewText"])
-            doc.overall = comment["overall"]
-            documents.append(doc)
+            if comment["reviewText"] != "":
+                try:
+                    doc = Document.create_from_text(comment["reviewText"])
+                except:
+                    print("ERREUR DOC")
+                    print(line)
+                doc.overall = comment["overall"]
+                documents.append(doc)
             # documents.append(create_from_text())
             # Split lines and loop over them
             # Read json with: data = json.loads(line)
